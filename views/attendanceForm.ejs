@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Attendance Submission</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f4f4f9;
+      color: #333;
+      transition: background-color 0.5s ease;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    form {
+      max-width: 400px;
+      width: 100%;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      animation: fadeIn 0.5s;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    label {
+      margin: 15px 0 5px;
+      font-weight: bold;
+    }
+    input[type="number"], button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+      transition: border-color 0.3s;
+    }
+    input[type="number"]:focus {
+      border-color: #007bff;
+      outline: none;
+    }
+    button {
+      background-color: #28a745;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 18px;
+      margin-top: 15px;
+      transition: background-color 0.3s;
+      opacity: 0.7; /* Make button initially semi-transparent */
+      transition: opacity 0.3s;
+    }
+    button:hover {
+      background-color: #218838;
+      opacity: 1; /* Full opacity on hover */
+    }
+    button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+    #loading {
+      display: none;
+      text-align: center;
+      margin-top: 20px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <form id="attendanceForm" action="/api/student/attendance/submit" method="POST" onsubmit="showLoading()">
+    <input type="hidden" name="attendanceId" value="<%= attendanceId %>" />
+    <input type="hidden" name="latitude" id="latitude" required />
+    <input type="hidden" name="longitude" id="longitude" required />
+    <input type="hidden" name="fingerprint" id="fingerprint" />
+
+    <label for="studentId">Student ID:</label>
+    <input type="number" id="studentId" name="studentId" required />
+
+    <button type="submit" id="submitBtn" disabled>Submit Attendance</button>
+    <div id="loading">Loading...</div>
+  </form>
+
+  <script>
+    const state = {
+      fingerprintReady: false,
+      locationReady: false,
+    };
+
+    function checkIfReady() {
+      document.getElementById('submitBtn').disabled = !(state.fingerprintReady && state.locationReady);
+    }
+
+    async function generateFingerprint() {
+      try {
+        const fp = await FingerprintJS.load();
+        const result = await fp.get();
+        document.getElementById('fingerprint').value = result.visitorId;
+        state.fingerprintReady = true;
+        checkIfReady();
+      } catch (error) {
+        console.error('Fingerprint generation failed:', error);
+        alert('Failed to generate fingerprint. Please try again.');
+      }
+    }
+
+    async function getLocation() {
+      try {
+        const permission = await navigator.permissions.query({ name: 'geolocation' });
+        if (permission.state === 'denied') {
+          alert('Location permission denied. Please enable location services.');
+          return;
+        }
+        const position = await getCurrentPositionWithRetry(3);
+        document.getElementById('latitude').value = position.coords.latitude;
+        document.getElementById('longitude').value = position.coords.longitude;
+        state.locationReady = true;
+        checkIfReady();
+      } catch (error) {
+        console.error('Location retrieval failed:', error);
+        alert('Unable to retrieve location. Please try again.');
+      }
+    }
+
+    function getCurrentPositionWithRetry(maxRetries) {
+      let attempts = 0;
+
+      return new Promise((resolve, reject) => {
+        const attempt = () => {
+          navigator.geolocation.getCurrentPosition(
+            resolve,
+            (error) => {
+              if (attempts < maxRetries) {
+                attempts++;
+                console.warn(`Retrying location... (${attempts}/${maxRetries})`);
+                attempt();
+              } else {
+                reject(error);
+              }
+            },
+            {
+              enableHighAccuracy: true, // Higher accuracy for better location
+              timeout: 5000,
+              maximumAge: 10000,
+            }
+          );
+        };
+        attempt();
+      });
+    }
+
+    function showLoading() {
+      document.getElementById('loading').style.display = 'block';
+      disableSubmitButton();
+    }
+
+    function disableSubmitButton() {
+      document.getElementById('submitBtn').disabled = true;
+    }
+
+    window.onload = () => {
+      generateFingerprint();
+      getLocation();
+    };
+  </script>
+</body>
+</html>

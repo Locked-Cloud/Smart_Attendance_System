@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code</title>
+    <style>
+        /* Basic styling */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            transition: background-color 0.5s ease;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 2.5em;
+            color: #343a40;
+            opacity: 0;
+            animation: fadeIn 1s forwards;
+        }
+
+        /* Keyframe animation for fading in */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        img {
+            max-width: 300px; /* Limit the width of the QR code image */
+            margin: 20px 0;
+            border: 5px solid #007bff; /* Border around the QR code */
+            border-radius: 10px; /* Rounded corners */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Shadow for depth */
+            opacity: 0;
+            animation: slideIn 1s forwards; /* Slide-in animation for QR code */
+        }
+
+        /* Keyframe animation for sliding in */
+        @keyframes slideIn {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        p {
+            font-size: 1.2em;
+            margin: 10px 0;
+            text-align: center;
+            opacity: 0;
+            animation: fadeIn 1s forwards; /* Fade-in animation for the text */
+            animation-delay: 0.5s; /* Delay for text */
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        a:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px); /* Subtle lift effect */
+        }
+    </style>
+</head>
+<body>
+    <h1>Attendance QR Code</h1>
+    <img src="<%= qrCodeImage %>" alt="QR Code">
+    <p>QR Code will expire at: <%= new Date(expiryTime).toLocaleString() %></p>
+    <a href="/api/professor/dashboard">Back to Dashboard</a>
+
+    <script>
+        // Adding a delay to the image animation
+        const img = document.querySelector('img');
+        img.style.animationDelay = '0.5s'; // Delay for image
+    </script>
+</body>
+</html>

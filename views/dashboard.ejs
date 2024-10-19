@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <style>
+      /* Basic styling */
+      body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f4f4f9;
+        color: #333;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        transition: background-color 0.5s ease;
+      }
+
+      h1 {
+        text-align: center;
+        margin-bottom: 30px;
+        font-size: 2.5em;
+        color: #343a40;
+        opacity: 0;
+        animation: fadeIn 1s forwards; /* Fade-in animation */
+      }
+
+      /* Keyframe animation for fading in */
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+
+      /* Container for links */
+      .link-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        max-width: 400px;
+      }
+
+      a {
+        display: block;
+        margin: 10px;
+        padding: 15px;
+        background: white;
+        border-radius: 5px;
+        text-align: center;
+        text-decoration: none;
+        color: #007bff;
+        font-size: 1.2em;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        transition: background-color 0.3s, transform 0.3s, opacity 0.3s; /* Added opacity transition */
+        width: 100%; /* Full width for better accessibility */
+        opacity: 0; /* Start hidden for animation */
+        animation: slideIn 0.5s forwards; /* Slide-in animation */
+      }
+
+      /* Keyframe animation for sliding in */
+      @keyframes slideIn {
+        from {
+          transform: translateY(20px); /* Start below */
+          opacity: 0; /* Start hidden */
+        }
+        to {
+          transform: translateY(0); /* End at original position */
+          opacity: 1; /* Fade in */
+        }
+      }
+
+      a:hover {
+        background-color: #e9ecef;
+        transform: translateY(-2px); /* Subtle lift effect */
+      }
+
+      /* Responsive styles */
+      @media (max-width: 500px) {
+        h1 {
+          font-size: 2em;
+        }
+
+        a {
+          font-size: 1em;
+        }
+      }
+    </style>
+</head>
+<body>
+    <h1>Welcome to the Dashboard</h1>
+    <div class="link-container">
+        <a href="/api/professor/create-attendance">Create Attendance</a>
+        <a href="/api/professor/previous-attendances">View Previous Attendances</a>
+        <a href="/api/professor/create-class">Create Class</a>
+        <a href="/api/professor/logout">Logout</a>
+    </div>
+
+    <script>
+      // Adding a delay to the link animations
+      const links = document.querySelectorAll('.link-container a');
+      links.forEach((link, index) => {
+        link.style.animationDelay = `${index * 0.1}s`; // Staggered animation delay
+      });
+    </script>
+</body>
+</html>

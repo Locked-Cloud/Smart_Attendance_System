@@ -1,0 +1,12 @@
+attendance system modifications:
+
+1-we want to minimize or limit the number of students that can log in that can be done through the following:
+we will get a list of ids these ids are the only ids that can submit it's attendance. the user can only submit once and only his id.bashmohands mostafa will give me the list of the ids and i need to enter it as an input
+
+2-submision logic will be changed so that only users with their id can be present so the intial for all the students will be absent until they submit their attendance
+
+3-change the class name to be a class that is created only once as an object and we can call this object instead of entering the class name everytime
+
+4-change the excel sheet format to be a one excel sheet that will have all the classes that we had and will have all the student names and ids and will have a true or false next to their name like a check box for every class using class date
+
+5-modify the html to fullfil everything i will change above

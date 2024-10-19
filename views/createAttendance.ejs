@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Attendance</title>
+  <style>
+    /* Basic reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* Body and background styling */
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f0f2f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      transition: background-color 0.5s ease;
+    }
+
+    /* Form container styling */
+    form {
+      background-color: #ffffff;
+      border-radius: 10px;
+      padding: 25px;
+      width: 100%;
+      max-width: 450px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    /* Form fade-in animation */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Styling for labels and input fields */
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    input[type="text"], input[type="number"], select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+      transition: border-color 0.3s ease;
+    }
+
+    /* Input focus effect */
+    input:focus, select:focus {
+      border-color: #007bff;
+      outline: none;
+      box-shadow: 0 0 5px rgba(0, 123, 255, 0.2);
+    }
+
+    /* Button styling */
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 18px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    /* Button hover effect */
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    /* Form header */
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 24px;
+      color: #333;
+    }
+
+    /* Message for hidden fields */
+    .hidden-message {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 15px;
+    }
+  </style>
+</head>
+<body>
+
+  <form action="/api/professor/create-attendance" method="POST">
+    <h2>Create Attendance</h2>
+    
+    <label for="classId">Select Class:</label>
+    <select name="classId" required>
+      <% classes.forEach(function(classItem) { %>
+        <option value="<%= classItem._id %>"><%= classItem.className %></option>
+      <% }); %>
+    </select>
+
+    <label for="radius">Radius (meters):</label>
+    <input type="number" name="radius" required placeholder="Enter radius in meters" />
+
+    <!-- Hidden fields for location -->
+    <input type="hidden" name="latitude" id="latitude" required />
+    <input type="hidden" name="longitude" id="longitude" required />
+    
+    <div class="hidden-message">
+      The system will automatically capture your location. Please enable location services on your device.
+    </div>
+
+    <button type="submit" id="submitBtn" disabled>Create Attendance</button>
+  </form>
+
+  <script>
+    let positions = [];
+    const MAX_READINGS = 5;
+    const READ_INTERVAL = 1000; // 1 second between readings
+
+    function getLocation() {
+      if (navigator.geolocation) {
+        for (let i = 0; i < MAX_READINGS; i++) {
+          setTimeout(() => {
+            navigator.geolocation.getCurrentPosition(showPosition, showError, {
+              enableHighAccuracy: true,
+              timeout: 5000,
+              maximumAge: 0
+            });
+          }, i * READ_INTERVAL);
+        }
+      } else {
+        alert("Geolocation is not supported by this browser.");
+      }
+    }
+
+    function showPosition(position) {
+      positions.push({
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude
+      });
+
+      if (positions.length === MAX_READINGS) {
+        const avgLatitude = positions.reduce((sum, pos) => sum + pos.latitude, 0) / MAX_READINGS;
+        const avgLongitude = positions.reduce((sum, pos) => sum + pos.longitude, 0) / MAX_READINGS;
+
+        document.getElementById("latitude").value = avgLatitude;
+        document.getElementById("longitude").value = avgLongitude;
+        document.getElementById("submitBtn").disabled = false;
+      }
+    }
+
+    function showError(error) {
+      switch (error.code) {
+        case error.PERMISSION_DENIED:
+          alert("User denied the request for Geolocation.");
+          break;
+        case error.POSITION_UNAVAILABLE:
+          alert("Location information is unavailable.");
+          break;
+        case error.TIMEOUT:
+          alert("The request to get user location timed out.");
+          break;
+        case error.UNKNOWN_ERROR:
+          alert("An unknown error occurred.");
+          break;
+      }
+    }
+
+    window.onload = getLocation;
+  </script>
+
+</body>
+</html>

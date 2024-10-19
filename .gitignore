@@ -1,0 +1,12 @@
+# Exclude node_modules
+node_modules/
+
+# Exclude the professor.js file from routes folder
+routes/professors.js
+
+# Exclude the config file
+config.env
+
+# Other common exclusions
+*.log  # Exclude log files
+.env   # Exclude any .env files

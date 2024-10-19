@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Previous Attendances</title>
+    <style>
+      /* Basic reset and body styling */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      
+      body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f0f2f5;
+        color: #333;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+        min-height: 100vh;
+        transition: background-color 0.5s ease;
+      }
+
+      h1 {
+        margin-bottom: 20px;
+        font-size: 26px;
+        color: #333;
+        text-align: center;
+      }
+
+      ul {
+        list-style-type: none;
+        padding: 0;
+        width: 100%;
+        max-width: 600px;
+      }
+
+      li {
+        background-color: #fff;
+        margin-bottom: 15px;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        animation: fadeIn 0.5s ease-in-out;
+        transition: transform 0.3s ease;
+      }
+
+      li:hover {
+        transform: translateY(-5px);
+      }
+
+      /* Fade-in animation */
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      p {
+        margin-bottom: 8px;
+        font-size: 16px;
+        color: #555;
+      }
+
+      a {
+        color: #007bff;
+        text-decoration: none;
+        font-weight: bold;
+        transition: color 0.3s ease;
+      }
+
+      a:hover {
+        text-decoration: underline;
+        color: #0056b3;
+      }
+
+      /* Back to dashboard link */
+      .back-link {
+        margin-top: 20px;
+        font-size: 16px;
+        font-weight: bold;
+        color: #007bff;
+        text-decoration: none;
+      }
+
+      .back-link:hover {
+        text-decoration: underline;
+      }
+
+    </style>
+</head>
+<body>
+    <h1>Previous Attendances</h1>
+    <ul>
+        <% attendances.forEach(attendance => { %>
+            <li>
+                <p><strong>Class:</strong> <%= attendance.className %></p>
+                <p><strong>Date:</strong> <%= new Date(attendance.date).toLocaleString() %></p>
+                <a href="/api/professor/export-attendance/<%= attendance._id %>">Export Attendance</a>
+            </li>
+        <% }) %>
+    </ul>
+    <a href="dashboard" class="back-link">Back to Dashboard</a>
+</body>
+</html>

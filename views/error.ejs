@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error</title>
+    <style>
+      body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f4f4f9;
+        color: #333;
+        transition: background-color 0.5s ease;
+      }
+      h1 {
+        text-align: center;
+      }
+      p {
+        text-align: center;
+      }
+      a {
+        display: block;
+        margin: 10px;
+        padding: 10px;
+        background: white;
+        border-radius: 5px;
+        text-align: center;
+        text-decoration: none;
+        color: #007bff;
+        transition: background-color 0.3s;
+      }
+      a:hover {
+        background-color: #e9ecef;
+      }
+    </style>
+</head>
+<body>
+    <h1>Error</h1>
+    <p><%= msg %></p>
+    <a href="/api/professor/login">Go back to home</a>
+</body>
+</html>
